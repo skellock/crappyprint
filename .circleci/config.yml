@@ -1,0 +1,8 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: nimlang/nim
+    steps:
+      - checkout
+      - run: nimble test
