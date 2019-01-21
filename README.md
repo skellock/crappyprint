@@ -2,7 +2,7 @@
 
 # What is `crappyprint`?
 
-A [`nim`](https://nim-lang.org) library to build your own terminal printing DSL.
+A [`nim`](https://nim-lang.org) library to build your own terminal printing DSLs.
 
 
 # Basic Example

@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "Steve Kellock"
-description   = "Crappy terminal printing."
+description   = "Build your own terminal printing DSLs."
 license       = "MIT"
 srcDir        = "src"
 
