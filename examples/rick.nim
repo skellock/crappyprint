@@ -34,7 +34,7 @@ let print = newPrint()
 
 print
     .section("Intro")
-        .text("(awesome music starts)", style={styleReverse})
+        .text("(awesome music starts)", style={styleBright})
     .sectionEnd()
 
     .section("Verse 1")
