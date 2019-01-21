@@ -28,27 +28,31 @@ proc applyStyle(print: Print, style: PrintStyle): Print {.discardable.} =
 
 
 proc applyCurrentStyle(print: Print): Print {.discardable.} =
-    ## Reapplies whatever is on the top of the style stack
+    ## Reapplies whatever is on the top of the style stack.
     result = print.applyStyle(print.current)
 
 
 proc indent*(print: Print, levels=1): Print {.discardable.} =
-    ## Increases indentation.
+    ## Changes the indentation for new lines. Levels indicates the number
+    ## of indendations to apply and not the number of spaces.
+    ##
+    ## If the number is positive, the indentation will go to the right.
+    ##
+    ## If the number is negative, the indentation will go back to the left.
+    ##
+    ## If the number is 0, indentation is reset.
     result = print
-    for i in 1..levels:
-        print.current.indentBy += print.spacesPerIndent
-
-
-proc dedent*(print: Print, levels=1): Print {.discardable.} =
-    ## Decreases indentation.
-    result = print
-    for i in 1..levels:
-        print.current.indentBy -= print.spacesPerIndent
-
-
-proc unindent*(print: Print): Print {.discardable.} =
-    result = print
-    print.current.indentBy = 0
+    if levels > 0:
+        for i in 1..levels:
+            print.current.indentBy += print.spacesPerIndent
+    elif levels < 0:
+        for i in 1..(levels * -1):
+            print.current.indentBy -= print.spacesPerIndent
+        # minimum of 0
+        if print.current.indentBy < 0:
+            print.current.indentBy = 0
+    elif levels == 0:
+        print.current.indentBy = 0
 
 
 proc reset*(print: Print): Print {.discardable.} =
@@ -63,7 +67,6 @@ proc reset*(print: Print): Print {.discardable.} =
         indentBy: 0,
         )
     print.target.resetAttributes()
-    # print.applyCurrentStyle()
 
 
 proc bright*(print: Print, on = true): Print {.discardable.} =
@@ -107,6 +110,7 @@ proc space*(print: Print, count=1): Print {.discardable.} =
     result = print
     for i in 1..count:
         print.target.write(" ")
+
 
 proc text*(
     print: Print,

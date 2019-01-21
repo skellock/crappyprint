@@ -10,6 +10,8 @@ system.addQuitProc(resetAttributes)
 
 let filename = "tests/sample"
 
+# --- Normal Text ---
+
 suite "text":
     let f = open(filename, fmReadWrite)
     newPrint(f).text("hello")
@@ -17,6 +19,22 @@ suite "text":
 
     test "writing":
         check readFile(filename) == "hello"
+
+# --- Line breaks ---
+
+suite "enter":
+    let f = open(filename, fmReadWrite)
+    newPrint(f)
+        .text("hi")
+        .enter()
+        .enter(3)
+    f.close()
+
+    test "writing":
+        check readFile(filename) == "hi\n\n\n\n"
+
+
+# --- Text color & style ---
 
 suite "red fg text":
     let f = open(filename, fmReadWrite)
@@ -34,7 +52,31 @@ suite "red bg text":
     test "writing":
         check readFile(filename) == "\e[39m\e[41mhello\e[0m\e[0m"
 
-suite "indented text":
+# --- Indentation ---
+
+suite "indent":
+    let f = open(filename, fmReadWrite)
+    newPrint(f, spacesPerIndent = 2)
+        .indent()    # over 1
+        .text("a")
+        .enter()
+        .indent(-1)  # back 1
+        .text("b")
+        .enter()
+        .indent(2)   # over 2
+        .text("c")
+        .enter()
+        .indent(0)   # reset
+        .text("d")
+        .enter()
+        .indent(-69) # minimum of 0
+        .text("e")
+    f.close()
+
+    test "writing":
+        check readFile(filename) == "  a\nb\n    c\nd\ne"
+
+suite "indent during text":
     let f = open(filename, fmReadWrite)
     newPrint(f).text("hello", indentBy=2)
     f.close()
@@ -42,18 +84,12 @@ suite "indented text":
     test "writing":
         check readFile(filename) == "  hello"
 
-suite "enter":
+# --- Space ---
+
+suite "space":
     let f = open(filename, fmReadWrite)
-    newPrint(f).text("hi").enter()
+    newPrint(f).space().space(4)
     f.close()
 
     test "writing":
-        check readFile(filename) == "hi\n"
-
-suite "many enters":
-    let f = open(filename, fmReadWrite)
-    newPrint(f).text("hi").enter(3)
-    f.close()
-
-    test "writing":
-        check readFile(filename) == "hi\n\n\n"
+        check readFile(filename) == "     "

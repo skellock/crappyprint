@@ -26,7 +26,7 @@ proc section(print: Print, text: string): Print =
         .indent()
 
 proc sectionEnd(print: Print): Print =
-    print.unindent.enter(2)
+    print.indent(-1).enter(2)
 
 # --- start of program ---
 
