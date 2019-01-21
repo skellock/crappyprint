@@ -4,25 +4,6 @@
 
 A [`nim`](https://nim-lang.org) library to build your own terminal printing DSL.
 
-See [this example](examples/rick.nim) to see it in action.
-
-# Why not?
-
-* the `terminal` modules is already great
-* your program doesn't print much styled text
-* this library does very little
-
-# Requirements
-
-* Nim 0.19.2+
-
-
-# Installing
-
-`nimble install https://github.com/skellock/crappyprint#head`
-
-( NOTE: I haven't submitted this to `nimble` just yet. )
-
 
 # Basic Example
 
@@ -112,6 +93,8 @@ proc hr*(print: Print): Print =
     .enter()
 ```
 
+See [this code](examples/rick.nim) for a larger example.
+
 
 # Principles
 
@@ -173,6 +156,7 @@ newPrint()
   .text(".")
 ```
 
+
 ### `.bg(color)`
 
 Changes the background color.
@@ -194,6 +178,7 @@ newPrint()
   .text("           ").enter()
 ```
 
+
 ### `.indent(level)`
 
 Changes the indentation level so text will be inset from the left on each line.
@@ -214,6 +199,7 @@ newPrint()
   .text("Steve")
 ```
 
+
 ### `.space(count)`
 
 Adds horizontal whitespace.
@@ -227,6 +213,7 @@ newPrint()
   .space(81) # <-- adds some spaces
   .text("the forbidden zone!")
 ```
+
 
 ### `.enter(count)`
 
@@ -243,6 +230,7 @@ newPrint()
   .enter(4000) # <-- RIP your terminal
   .text("is a virtue.")
 ```
+
 
 ### `.bright(on)`
 
@@ -282,6 +270,31 @@ newPrint()
   .text("/ Jenny")
   .dim(false) # <-- off
 ```
+
+
+# Why not use this?
+
+* the `terminal` modules is already great
+* your program doesn't print much styled text
+* this library does very little
+
+
+# Changelog
+
+**`next:`**
+* Initial release
+
+
+# Requirements
+
+* Nim 0.19.2+
+
+
+# Installing
+
+`nimble install https://github.com/skellock/crappyprint#head`
+
+( NOTE: I haven't submitted this to `nimble` just yet. )
 
 
 # License
