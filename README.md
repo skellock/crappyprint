@@ -110,33 +110,33 @@ proc hr*(print: Print): Print =
 
 # API
 
-#### `newPrint(target, spacesPerIndent)`
+### `newPrint(target=stdout, spacesPerIndent=2)`
 
 Returns a `Print` object used to chain styling functions.
 
-| argument           | type   | description                                                      | default  |
-| ------------------ | ------ | ---------------------------------------------------------------- | -------- |
-| **target**         | `File` | optional: where to write to                                      | `stdout` |
-| **spacePerIndent** | `int`  | optional: how many spaces are printed for each indentation level | `2`      |
+| argument       | type   | description                                                      | default  |
+| -------------- | ------ | ---------------------------------------------------------------- | -------- |
+| target         | `File` | optional: where to write to                                      | `stdout` |
+| spacePerIndent | `int`  | optional: how many spaces are printed for each indentation level | `2`      |
 
 ```nim
 let print = newPrint()
 ```
 
-#### `.text(value, fg, bg, style, indentBy)`
+### `.text(value, fg=fgDefault, bg=bgDefault, style={}, indentBy=0)`
 
 Prints text. You'll be using this one frequently.
 
-| argument     | type              | description                                                                  | default     |
-| ------------ | ----------------- | ---------------------------------------------------------------------------- | ----------- |
-| **value**    | `string`          | the text to print                                                            | -           |
-| **fg**       | `ForegroundColor` | optional: applies a foreground color to the text                             | `fgDefault` |
-| **bg**       | `BackgroundColor` | optional: applies a background color to the text                             | `bgDefault` |
-| **style**    | `set[Style]`      | optional: applies styling (`styleBright` for example) to the text            | `{}`        |
-| **indentBy** | `int`             | optional: overrides the current indentation with a specific number of spaces | `0`         |
+| argument | type              | description                                                                  | default     |
+| -------- | ----------------- | ---------------------------------------------------------------------------- | ----------- |
+| value    | `string`          | the text to print                                                            | -           |
+| fg       | `ForegroundColor` | optional: applies a foreground color to the text                             | `fgDefault` |
+| bg       | `BackgroundColor` | optional: applies a background color to the text                             | `bgDefault` |
+| style    | `set[Style]`      | optional: applies styling (`styleBright` for example) to the text            | `{}`        |
+| indentBy | `int`             | optional: overrides the current indentation with a specific number of spaces | `0`         |
 
 
-#### `.fg(color)`
+### `.fg(color)`
 
 Changes the foreground color.
 
@@ -154,7 +154,7 @@ newPrint()
   .text(".")
 ```
 
-#### `.bg(color)`
+### `.bg(color)`
 
 Changes the background color.
 
