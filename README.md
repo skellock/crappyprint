@@ -1,8 +1,16 @@
-# crappyprint 💩
-
 [![CircleCI](https://circleci.com/gh/skellock/crappyprint.svg?style=svg)](https://circleci.com/gh/skellock/crappyprint)
 
-A stateful & composable terminal printing package for [`nim`](https://nim-lang.org).
+# What is `crappyprint`?
+
+A [`nim`](https://nim-lang.org) library to build your own terminal printing DSL.
+
+See [this example](examples/rick.nim) to see it in action.
+
+# Why not?
+
+* the `terminal` modules is already great
+* your program doesn't print much styled text
+* this library does very little
 
 # Requirements
 
@@ -11,7 +19,7 @@ A stateful & composable terminal printing package for [`nim`](https://nim-lang.o
 
 # Installing
 
-`nimble install https://github.com/skellock/crappyprint`
+`nimble install https://github.com/skellock/crappyprint#head`
 
 ( NOTE: I haven't submitted this to `nimble` just yet. )
 
@@ -59,9 +67,9 @@ newPrint(spacesPerIndent=4)
 
 
 # Composition Example
-Here's where things start to get interesting.
+The previous example is pretty messy right?
 
-The previous example is pretty messy right? Let's clean that up by making some composable styling functions.
+Let's clean that up by making some composable styling functions.
 
 ```nim
 import terminal, crappyprint
@@ -80,8 +88,11 @@ proc bullet(print: Print, text: string): Print =
     .text("* ", fg=fgGreen)
     .text(text)
     .enter()
+```
 
-# here's what the previous example looks like now...
+With those 2 functions in play, here's what the previous example looks like now...
+
+```nim
 newPrint(spacesPerIndent=4)
   .title("Never gonna")
   .bullet("give you up")
@@ -135,6 +146,14 @@ Prints text. You'll be using this one frequently.
 | style    | `set[Style]`      | optional: applies styling (`styleBright` for example) to the text            | `{}`        |
 | indentBy | `int`             | optional: overrides the current indentation with a specific number of spaces | `0`         |
 
+```nim
+newPrint()
+  .text("Say ")
+  .text("hello ", style={styleBold})
+  .text("to my", fg=bgGreen)
+  .text(" little friend!", bg=bgBlue, fg=fgWhite)
+```
+
 
 ### `.fg(color)`
 
@@ -148,9 +167,9 @@ Changes the foreground color.
 ```nim
 newPrint()
   .text("Days since last accident: ")
-  .fg(fgRed)
+  .fg(fgRed)     # <-- red text
   .text("0")
-  .fg(fgDefault)
+  .fg(fgDefault) # <-- normal text
   .text(".")
 ```
 
@@ -165,15 +184,105 @@ Changes the background color.
 ```nim
 newPrint()
   .text("Don't cry for me, Argentina.").enter(2)
-  .bg(bgCyan)
+  .bg(bgCyan)  # <-- cyan
   .text("           ").enter()
-  .bg(bgWhite)
+  .bg(bgWhite) # <-- then white
   .fg(fgYellow)
   .bright()
   .text("     *     ").enter()
-  .bg(bgCyan)
+  .bg(bgCyan)  # <-- then back to cyan
   .text("           ").enter()
 ```
+
+### `.indent(level)`
+
+Changes the indentation level so text will be inset from the left on each line.
+
+| argument  | type  | description                         | default |
+| --------- | ----- | ----------------------------------- | ------- |
+| **level** | `int` | how many levels we should move over | `1`     |
+
+By default (see: `newPrint()`), there are `2` spacers for every `1`  level of indenting.
+
+```nim
+newPrint()
+  .text("Dear Diary,").enter(2)
+  .indent() # <-- move future text to the right (2 spaces)
+  .text("I love nim.").enter(2)
+  .indent(-1) # <-- sets the indentation back
+  .text("Love, ").enter(2)
+  .text("Steve")
+```
+
+### `.space(count)`
+
+Adds horizontal whitespace.
+
+| argument  | type  | description                 | default |
+| --------- | ----- | --------------------------- | ------- |
+| **count** | `int` | the number of spaces to add | `1`     |
+
+```nim
+newPrint()
+  .space(81) # <-- adds some spaces
+  .text("the forbidden zone!")
+```
+
+### `.enter(count)`
+
+Moves to the next line.
+
+| argument  | type  | description                | default |
+| --------- | ----- | -------------------------- | ------- |
+| **count** | `int` | the number of lines to add | `1`     |
+
+
+```nim
+newPrint()
+  .text("Patience...")
+  .enter(4000) # <-- RIP your terminal
+  .text("is a virtue.")
+```
+
+### `.bright(on)`
+
+Makes subsequent text be bright/bold.
+
+| argument | type   | description                      | default |
+| -------- | ------ | -------------------------------- | ------- |
+| **on**   | `bool` | should this style setting be on? | `true`  |
+
+You can turn this off again with `.bright(off)`.
+
+```nim
+newPrint()
+  .bright()      # <-- on
+  .text("twinkle twinkle")
+  .bright(false) # <-- off
+  .text("little star")
+```
+
+
+### `.dim(on)`
+
+Makes subsequent text be dim.
+
+`DANGER`:  I'm currently having issues with this.
+
+| argument | type   | description                      | default |
+| -------- | ------ | -------------------------------- | ------- |
+| **on**   | `bool` | should this style setting be on? | `true`  |
+
+You can turn this off again with `.dim(off)`.
+
+```nim
+newPrint()
+  .text("867-5309")
+  .dim()      # <-- on
+  .text("/ Jenny")
+  .dim(false) # <-- off
+```
+
 
 # License
 
