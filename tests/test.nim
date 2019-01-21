@@ -16,7 +16,7 @@ suite "text":
     f.close()
 
     test "writing":
-        check readFile(filename) == "\e[39m\e[49mhello\e[0m\e[0m"
+        check readFile(filename) == "hello"
 
 suite "red fg text":
     let f = open(filename, fmReadWrite)
@@ -40,7 +40,7 @@ suite "indented text":
     f.close()
 
     test "writing":
-        check readFile(filename) == "\e[39m\e[49m  hello\e[0m\e[0m"
+        check readFile(filename) == "  hello"
 
 suite "enter":
     let f = open(filename, fmReadWrite)
@@ -48,7 +48,7 @@ suite "enter":
     f.close()
 
     test "writing":
-        check readFile(filename) == "\e[39m\e[49mhi\e[0m\e[0m\n"
+        check readFile(filename) == "hi\n"
 
 suite "many enters":
     let f = open(filename, fmReadWrite)
@@ -56,4 +56,4 @@ suite "many enters":
     f.close()
 
     test "writing":
-        check readFile(filename) == "\e[39m\e[49mhi\e[0m\e[0m\n\n\n"
+        check readFile(filename) == "hi\n\n\n"

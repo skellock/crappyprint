@@ -14,7 +14,7 @@ type
     Print* = ref object
         ## For printing text out on the terminal.
         target*: File        ## The file we're writing to (e.g. stdout).
-        current: PrintStyle ## The style we're currently set to.
+        current: PrintStyle  ## The style we're currently set to.
         spacesPerIndent: int ## How many spaces per indent?
         isLineIndented: bool ## Have we already applied indentation for this line?
 
@@ -55,9 +55,15 @@ proc reset*(print: Print): Print {.discardable.} =
     ## Resets us back to the original state.
     result = print
     print.isLineIndented = false
-    print.unindent()
-    print.current = PrintStyle(name: "root")
-    print.applyCurrentStyle()
+    print.current = PrintStyle(
+        name: "root",
+        style: {},
+        fg: fgDefault,
+        bg: bgDefault,
+        indentBy: 0,
+        )
+    print.target.resetAttributes()
+    # print.applyCurrentStyle()
 
 
 proc bright*(print: Print, on = true): Print {.discardable.} =
@@ -86,7 +92,8 @@ proc fg*(print: Print, color: ForegroundColor): Print {.discardable.} =
     ## Sets the foreground color.
     result = print
     print.current.fg = color
-    print.applyCurrentStyle()
+    print.target.setForegroundColor(color)
+    # print.applyCurrentStyle()
 
 
 proc bg*(print: Print, color: BackgroundColor): Print {.discardable.} =
@@ -112,33 +119,32 @@ proc text*(
     ## Writes some text on the screen.
     result = print
 
-    # TODO:(steve)
-    #   We only need to change styles if we've
-    #   asked to. Unfortunately, we'd have to test each
-    #   inbound argument to see if it's not the default.
-    #
-    #   I'm just not going to do it and see if it is going
-    #   to be a problem. I have a feeling it will.
-
-    # copy & change the style
-    var tempStyle = print.current
-    tempStyle.style = style
-    tempStyle.fg = fg
-    tempStyle.bg = bg
-    print.applyStyle(tempStyle)
+    var hasChanges = false
+    if fg != fgDefault or bg != bgDefault or style != {}:
+        # we need to temporarily change the style, fg or bg
+        var tempStyle = print.current
+        hasChanges = true
+        tempStyle.style = style
+        tempStyle.fg = fg
+        tempStyle.bg = bg
+        print.applyStyle(tempStyle)
 
     # indentation
     if indentBy > 0:
+        # we need to temporarily change the indentation
         print.space(indentBy)
-    elif not print.isLineIndented and tempStyle.indentBy > 0:
+        print.isLineIndented = true
+    elif not print.isLineIndented and print.current.indentBy > 0:
+        # apply the indentation if we've already set it
         print.space(print.current.indentBy)
         print.isLineIndented = true
 
     # write the text
     print.target.write(text)
 
-    # revert the style changes
-    print.applyCurrentStyle()
+    # revert the style changes (if any)
+    if hasChanges:
+        print.applyCurrentStyle()
 
 
 proc enter*(print: Print, count=1): Print {.discardable.} =
