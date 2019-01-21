@@ -8,7 +8,7 @@ system.addQuitProc(resetAttributes)
 #   * can we use a File without touching the file system?
 #   * write a template or something to get rid of the boilerplate
 
-let filename = "tests/sample"
+let filename = "tests/output"
 
 # --- Normal Text ---
 
