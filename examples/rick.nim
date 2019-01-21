@@ -26,7 +26,7 @@ proc section(print: Print, text: string): Print =
         .indent()
 
 proc sectionEnd(print: Print): Print =
-    print.reset().enter(2)
+    print.unindent.enter(2)
 
 # --- start of program ---
 
@@ -53,7 +53,13 @@ print
         .enter()
 
         # line 3
-        .text("A full commitment's what I'm thinking of")
+        .text("A")
+        .bright()
+        .text(" full commitment's ")
+        .bright(false)
+        .fg(fgYellow)
+        .text("what I'm thinking of")
+        .fg(fgDefault)
         .enter()
 
         # line 4
