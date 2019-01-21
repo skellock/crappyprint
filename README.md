@@ -50,7 +50,7 @@ newPrint(spacesPerIndent=4)
 # Composition Example
 The previous example is pretty messy right?
 
-Let's clean that up by making some composable styling functions.
+Let's clean that up by making 2 functions; `title()` and `bullet()`:
 
 ```nim
 import terminal, crappyprint
@@ -83,10 +83,10 @@ newPrint(spacesPerIndent=4)
   .indent(0)
 ```
 
-To introduce your own chainable functions, you create a function whose first parameter is `Print` and the return value is also `Print`. For example:
+To introduce your own chainable functions, you create a function whose first parameter is `Print` and the return value is also `Print`.  I recommend adding the `{.discardable.}` pragma too. For example:
 
 ```nim
-proc hr*(print: Print): Print =
+proc hr*(print: Print): Print {.discardable.} =
   ## Prints a fancy line divider.
   print
     .text("-=-=-=-=-=-=-=-", style={styleBright}, fg=fgBlue)
@@ -274,14 +274,14 @@ newPrint()
 
 # Why not use this?
 
-* the `terminal` modules is already great
+* the `terminal` module is already great
 * your program doesn't print much styled text
 * this library does very little
 
 
 # Changelog
 
-**`next:`**
+**`0.1.0`** - Jan 21, 2019
 * Initial release
 
 
@@ -295,6 +295,19 @@ newPrint()
 `nimble install https://github.com/skellock/crappyprint#head`
 
 ( NOTE: I haven't submitted this to `nimble` just yet. )
+
+
+# TODOs
+
+- [ ] make CI work on `nim@0.19.2`
+- [ ] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
+- [ ] support for "\n" characters when using `text()`
+- [ ] fix dim text
+- [ ] finish testing all functions
+- [ ] support windows (not sure what's involved)
+- [ ] show more examples of control flow
+- [ ] change name of library?
+- [ ] submit to nimble
 
 
 # License
