@@ -255,8 +255,6 @@ newPrint()
 
 Makes subsequent text be dim.
 
-`DANGER`:  I'm currently having issues with this.
-
 | argument | type   | description                      | default |
 | -------- | ------ | -------------------------------- | ------- |
 | **on**   | `bool` | should this style setting be on? | `true`  |
@@ -302,7 +300,6 @@ newPrint()
 - [ ] make CI work on `nim@0.19.2`
 - [ ] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
 - [ ] support for "\n" characters when using `text()`
-- [ ] fix dim text
 - [ ] finish testing all functions
 - [ ] support windows (not sure what's involved)
 - [ ] show more examples of control flow
