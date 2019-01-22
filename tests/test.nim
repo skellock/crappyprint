@@ -1,95 +1,70 @@
-import terminal, os, unittest # stdlib
+import terminal # stdlib
 import crappyprint # project
 
 # ensure we reset when we kill the process
 system.addQuitProc(resetAttributes)
 
-# TODO:
-#   * can we use a File without touching the file system?
-#   * write a template or something to get rid of the boilerplate
+template expect(content: string, body: untyped): untyped {.dirty.} =
+    ## A janky boilerplate-avoidance function to check that the expected
+    ## content is being generated.
+    ##
+    ## I really don't like that I had to use {.dirty.} for this because
+    ## it forces me to use `block:` down below.
+    ##
+    ## It is better than what I had before though.
+    ##
+    ## I'm just not sure how to pass the `file` back to the body. I'd love to
+    ## find a way to not have to touch the filesystem at all.
+    ##
+    ## Halp!
+    let 
+        filename = "tests/output"
+        file = open(filename, fmReadWrite)
+    try:
+        discard body
+    finally:
+        file.close()
+    doAssert readFile(filename) == content
+    
 
-let filename = "tests/output"
+block: # regular text
+    expect "hello":
+        newPrint(file).text("hello")
 
-# --- Normal Text ---
+block: # line breaks
+    expect "hi\n\n\n\n":
+        newPrint(file).text("hi").enter().enter(3)
 
-suite "text":
-    let f = open(filename, fmReadWrite)
-    newPrint(f).text("hello")
-    f.close()
+block: # foreground text color
+    expect "\e[31m\e[49mhello\e[0m\e[0m":
+        newPrint(file).text("hello", fg=fgRed)
 
-    test "writing":
-        check readFile(filename) == "hello"
+block: # background text color
+    expect "\e[39m\e[41mhello\e[0m\e[0m":
+        newPrint(file).text("hello", bg=bgRed)
 
-# --- Line breaks ---
+block: # indentation
+    expect "  a\nb\n    c\nd\ne":
+        newPrint(file, spacesPerIndent=2)
+            .indent()    # over 1
+            .text("a").enter()
+            .indent(-1)  # back 1
+            .text("b").enter()
+            .indent(2)   # over 2
+            .text("c").enter()
+            .indent(0)   # reset
+            .text("d").enter()
+            .indent(-69) # minimum of 0
+            .text("e")
 
-suite "enter":
-    let f = open(filename, fmReadWrite)
-    newPrint(f)
-        .text("hi")
-        .enter()
-        .enter(3)
-    f.close()
+block: # indent during text
+    expect "  hello":
+        newPrint(file).text("hello", indentBy=2)
 
-    test "writing":
-        check readFile(filename) == "hi\n\n\n\n"
+block: # space
+    expect "     ":
+        newPrint(file).space().space(4)
 
-
-# --- Text color & style ---
-
-suite "red fg text":
-    let f = open(filename, fmReadWrite)
-    newPrint(f).text("hello", fg=fgRed)
-    f.close()
-
-    test "writing":
-        check readFile(filename) == "\e[31m\e[49mhello\e[0m\e[0m"
-
-suite "red bg text":
-    let f = open(filename, fmReadWrite)
-    newPrint(f).text("hello", bg=bgRed)
-    f.close()
-
-    test "writing":
-        check readFile(filename) == "\e[39m\e[41mhello\e[0m\e[0m"
-
-# --- Indentation ---
-
-suite "indent":
-    let f = open(filename, fmReadWrite)
-    newPrint(f, spacesPerIndent = 2)
-        .indent()    # over 1
-        .text("a")
-        .enter()
-        .indent(-1)  # back 1
-        .text("b")
-        .enter()
-        .indent(2)   # over 2
-        .text("c")
-        .enter()
-        .indent(0)   # reset
-        .text("d")
-        .enter()
-        .indent(-69) # minimum of 0
-        .text("e")
-    f.close()
-
-    test "writing":
-        check readFile(filename) == "  a\nb\n    c\nd\ne"
-
-suite "indent during text":
-    let f = open(filename, fmReadWrite)
-    newPrint(f).text("hello", indentBy=2)
-    f.close()
-
-    test "writing":
-        check readFile(filename) == "  hello"
-
-# --- Space ---
-
-suite "space":
-    let f = open(filename, fmReadWrite)
-    newPrint(f).space().space(4)
-    f.close()
-
-    test "writing":
-        check readFile(filename) == "     "
+block: # enter
+    expect "\n\n\n\n\n":
+        newPrint(file).enter().enter(4)
