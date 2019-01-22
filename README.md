@@ -4,7 +4,6 @@
 
 A [`nim`](https://nim-lang.org) library to build your own terminal printing DSLs.
 
-
 # Basic Example
 
 ```nim
@@ -20,7 +19,6 @@ newPrint()                            # spin it up & start chaining...
 ```
 
 Nothing too exciting here, eh?
-
 
 # Stateful Example
 
@@ -46,8 +44,8 @@ newPrint(spacesPerIndent=4)
   .indent(0) # <-- restores original indentation
 ```
 
-
 # Composition Example
+
 The previous example is pretty messy right?
 
 Let's clean that up by making 2 functions; `title()` and `bullet()`:
@@ -83,7 +81,7 @@ newPrint(spacesPerIndent=4)
   .indent(0)
 ```
 
-To introduce your own chainable functions, you create a function whose first parameter is `Print` and the return value is also `Print`.  I recommend adding the `{.discardable.}` pragma too. For example:
+To introduce your own chainable functions, you create a function whose first parameter is `Print` and the return value is also `Print`. I recommend adding the `{.discardable.}` pragma too. For example:
 
 ```nim
 proc hr*(print: Print): Print {.discardable.} =
@@ -95,12 +93,11 @@ proc hr*(print: Print): Print {.discardable.} =
 
 See [this code](examples/rick.nim) for a larger example.
 
-
 # Principles
 
-* programs should make their own styling functions (like a style guide)
-* don't reinvent colors and style from `terminal`
-* terminal printing is already stateful; so embrace that
+- programs should make their own styling functions (like a style guide)
+- don't reinvent colors and style from `terminal`
+- terminal printing is already stateful; so embrace that
 
 # API
 
@@ -137,7 +134,6 @@ newPrint()
   .text(" little friend!", bg=bgBlue, fg=fgWhite)
 ```
 
-
 ### `.fg(color)`
 
 Changes the foreground color.
@@ -145,7 +141,6 @@ Changes the foreground color.
 | argument  | type              | description                                                  |
 | --------- | ----------------- | ------------------------------------------------------------ |
 | **color** | `ForegroundColor` | applies a foreground color to any text written in the future |
-
 
 ```nim
 newPrint()
@@ -156,14 +151,13 @@ newPrint()
   .text(".")
 ```
 
-
 ### `.bg(color)`
 
 Changes the background color.
 
 | argument  | type              | description                                                  |
 | --------- | ----------------- | ------------------------------------------------------------ |
-| **color** | `ForegroundColor` | applies a foreground color to any text written in the future |
+| **color** | `BackgroundColor` | applies a background color to any text written in the future |
 
 ```nim
 newPrint()
@@ -178,7 +172,6 @@ newPrint()
   .text("           ").enter()
 ```
 
-
 ### `.indent(level)`
 
 Changes the indentation level so text will be inset from the left on each line.
@@ -187,7 +180,7 @@ Changes the indentation level so text will be inset from the left on each line.
 | --------- | ----- | ----------------------------------- | ------- |
 | **level** | `int` | how many levels we should move over | `1`     |
 
-By default (see: `newPrint()`), there are `2` spacers for every `1`  level of indenting.
+By default (see: `newPrint()`), there are `2` spacers for every `1` level of indenting.
 
 ```nim
 newPrint()
@@ -198,7 +191,6 @@ newPrint()
   .text("Love, ").enter(2)
   .text("Steve")
 ```
-
 
 ### `.space(count)`
 
@@ -214,7 +206,6 @@ newPrint()
   .text("the forbidden zone!")
 ```
 
-
 ### `.enter(count)`
 
 Moves to the next line.
@@ -223,14 +214,12 @@ Moves to the next line.
 | --------- | ----- | -------------------------- | ------- |
 | **count** | `int` | the number of lines to add | `1`     |
 
-
 ```nim
 newPrint()
   .text("Patience...")
   .enter(4000) # <-- RIP your terminal
   .text("is a virtue.")
 ```
-
 
 ### `.bright(on)`
 
@@ -250,7 +239,6 @@ newPrint()
   .text("little star")
 ```
 
-
 ### `.dim(on)`
 
 Makes subsequent text be dim.
@@ -269,31 +257,27 @@ newPrint()
   .dim(false) # <-- off
 ```
 
-
 # Why not use this?
 
-* the `terminal` module is already great
-* your program doesn't print much styled text
-* this library does very little
-
+- the `terminal` module is already great
+- your program doesn't print much styled text
+- this library does very little
 
 # Changelog
 
 **`0.1.0`** - Jan 21, 2019
-* Initial release
 
+- Initial release
 
 # Requirements
 
-* Nim 0.19.2+
-
+- Nim 0.19.2+
 
 # Installing
 
 `nimble install https://github.com/skellock/crappyprint#head`
 
 ( NOTE: I haven't submitted this to `nimble` just yet. )
-
 
 # TODOs
 
@@ -306,11 +290,9 @@ newPrint()
 - [ ] change name of library?
 - [ ] submit to nimble
 
-
 # License
 
 MIT.
-
 
 # Contributing
 
