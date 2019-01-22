@@ -4,16 +4,16 @@ import crappyprint # vendor
 # --- come up with your own styles ---
 
 proc lit(print: Print, text: string): Print =
-    print.text(text, fg=fgYellow, style={styleBright})
+    print.text(text, fg=fgBlue, style={})
 
 proc cool(print: Print, text: string): Print =
-    print.text(text, fg=fgBlue, style={styleUnderscore})
+    print.text(text, fg=fgBlue, style={styleDim})
 
 proc icy(print: Print, text: string): Print =
     print.text(text, style={styleUnderscore}, bg=bgBlue, fg=fgWhite)
 
 proc hip(print: Print, text: string): Print =
-    print.text(text, fg=fgGreen)
+    print.text(text, fg=fgBlue, style={styleBright})
 
 # --- compose your own blocks ---
 
@@ -63,7 +63,9 @@ print
         .enter()
 
         # line 4
-        .text("You wouldn't get this from ")
+        .text("You ")
+        .text("wouldn't", style={styleUnderscore})
+        .text(" get this from ")
         .cool("any").space()
         .lit("other").space()
         .hip("guy!")
