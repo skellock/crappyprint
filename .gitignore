@@ -1,3 +1,5 @@
-tests/test
-tests/output
-examples/rick
+# ignore binaries
+**/*
+!**.*
+!**/
+
