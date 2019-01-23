@@ -1,4 +1,4 @@
-import terminal, strutils, sets # stdlib
+import terminal, strutils # stdlib
 
 system.addQuitProc(resetAttributes)
 
@@ -96,13 +96,12 @@ proc fg*(print: Print, color: ForegroundColor): Print {.discardable.} =
     result = print
     print.current.fg = color
     print.target.setForegroundColor(color)
-    # print.applyCurrentStyle()
 
 
 proc bg*(print: Print, color: BackgroundColor): Print {.discardable.} =
     result = print
     print.current.bg = color
-    print.applyCurrentStyle()
+    print.target.setBackgroundColor(color)
 
 
 proc space*(print: Print, count=1): Print {.discardable.} =

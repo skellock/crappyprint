@@ -1,11 +1,11 @@
 import terminal # stdlib
-import verify # testing
 import crappyprint # project
+import verify # testing
 
 # ensure we reset when we kill the process
 system.addQuitProc(resetAttributes)
 
-template expect(content: string, body: untyped): untyped {.dirty.} =
+template expect(expected: string, body: untyped): untyped {.dirty.} =
     ## A janky boilerplate-avoidance function to check that the expected
     ## content is being generated.
     ##
@@ -18,55 +18,63 @@ template expect(content: string, body: untyped): untyped {.dirty.} =
     ## find a way to not have to touch the filesystem at all.
     ##
     ## Halp!
-    let 
-        filename = "tests/output"
-        file = open(filename, fmReadWrite)
-    try:
-        discard body
-    finally:
-        file.close()
+    block:
+      let
+          filename = "tests/output"
+          file = open(filename, fmReadWrite)
+      try:
+          discard body
+      finally:
+          file.close()
 
-    verify readFile(filename), content
-    
+      # The stackOffset is a hack that will capture the source of the error
+      # and not the next line of code: verify(...). I do this because this
+      # is a template.
+      #
+      # If you use verify() outside a template, you can leave
+      # this parameter off since the default is 1.
+      let content = readFile(filename)
+      verify(content, expected, stackOffset=2)
 
-block: # regular text
-    expect "hello":
-        newPrint(file).text("hello")
 
-block: # line breaks
-    expect "hi\n\n\n\n":
-        newPrint(file).text("hi").enter().enter(3)
+# normal text
+expect "hello":
+    newPrint(file).text("hello")
 
-block: # foreground text color
-    expect "\e[31m\e[49mhello\e[0m\e[0m":
-        newPrint(file).text("hello", fg=fgRed)
+# line breaks
+expect "hi\n\n\n\n":
+    newPrint(file).text("hi").enter().enter(3)
 
-block: # background text color
-    expect "\e[39m\e[41mhello\e[0m\e[0m":
-        newPrint(file).text("hello", bg=bgRed)
+# foreground text color
+expect "\e[31m\e[49mhello\e[0m\e[0m":
+    newPrint(file).text("hello", fg=fgRed)
 
-block: # indentation
-    expect "  a\nb\n    c\nd\ne":
-        newPrint(file, spacesPerIndent=2)
-            .indent()    # over 1
-            .text("a").enter()
-            .indent(-1)  # back 1
-            .text("b").enter()
-            .indent(2)   # over 2
-            .text("c").enter()
-            .indent(0)   # reset
-            .text("d").enter()
-            .indent(-69) # minimum of 0
-            .text("e")
+# background text color
+expect "\e[39m\e[41mhello\e[0m\e[0m":
+    newPrint(file).text("hello", bg=bgRed)
 
-block: # indent during text
-    expect " hello":
-        newPrint(file).text("hello", indentBy=2)
+# indentation
+expect "  a\nb\n    c\nd\ne":
+    newPrint(file, spacesPerIndent=2)
+        .indent()    # over 1
+        .text("a").enter()
+        .indent(-1)  # back 1
+        .text("b").enter()
+        .indent(2)   # over 2
+        .text("c").enter()
+        .indent(0)   # reset
+        .text("d").enter()
+        .indent(-69) # minimum of 0
+        .text("e")
 
-block: # space
-    expect "     ":
-        newPrint(file).space().space(4)
+# indent during text
+expect "  hello":
+    newPrint(file).text("hello", indentBy=2)
 
-block: # enter
-    expect "\n\n\n\n\n":
-        newPrint(file).enter().enter(4)
+# space
+expect "     ":
+    newPrint(file).space().space(4)
+
+# enter
+expect "\n\n\n\n\n":
+    newPrint(file).enter().enter(4)

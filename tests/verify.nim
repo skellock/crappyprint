@@ -68,7 +68,7 @@ proc printAssertionFailure[T](actualValue, expectedValue: T, pos: Pos) =
         errLine:
             stdout.styledWrite styleDim, "  $1|  " % $(pos.line + 1)
             stdout.styledWrite lines[pos.line]
-    
+
     # the line after
     if pos.line + 1 < lines.len:
         errLine:
@@ -88,7 +88,7 @@ proc printAssertionFailure[T](actualValue, expectedValue: T, pos: Pos) =
         errLine:
             stdout.styledWrite styleDim, "Expected".alignLeft(10)
             stdout.styledWrite expected
-          
+
     else:
         section "Actual"
         errLine:
@@ -102,13 +102,15 @@ proc printAssertionFailure[T](actualValue, expectedValue: T, pos: Pos) =
     stdout.flushFile()
 
 
-template verify*(actual, expected: untyped): untyped =
+template verify*(actual, expected: untyped, stackOffset = 1): untyped =
     try:
         # perform the assertion
         doAssert actual == expected
     except AssertionError:
         # if there was an assertion error, capture the position
-        let pos = instantiationInfo()
+        let pos = instantiationInfo(-stackOffset)
         # and pass it to a pretty print function
         printAssertionFailure actual, expected, pos
-        raise
+        # just die on assertion failures; this makes the tests have
+        # a 1-strike rule, but I'm 100% cool with that.
+        quit 1
