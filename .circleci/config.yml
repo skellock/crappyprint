@@ -5,4 +5,5 @@ jobs:
       - image: nimlang/nim
     steps:
       - checkout
+      - run: choosenim 0.19.2
       - run: nimble test
