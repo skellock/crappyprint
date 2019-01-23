@@ -1,4 +1,5 @@
 import terminal # stdlib
+import verify # testing
 import crappyprint # project
 
 # ensure we reset when we kill the process
@@ -24,7 +25,8 @@ template expect(content: string, body: untyped): untyped {.dirty.} =
         discard body
     finally:
         file.close()
-    doAssert readFile(filename) == content
+
+    verify readFile(filename), content
     
 
 block: # regular text
@@ -58,7 +60,7 @@ block: # indentation
             .text("e")
 
 block: # indent during text
-    expect "  hello":
+    expect " hello":
         newPrint(file).text("hello", indentBy=2)
 
 block: # space
