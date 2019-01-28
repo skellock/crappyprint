@@ -281,7 +281,7 @@ newPrint()
 
 # TODOs
 
-- [ ] make CI work on `nim@0.19.2`
+- [x] make CI work on `nim@0.19.2`
 - [ ] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
 - [ ] support for "\n" characters when using `text()`
 - [ ] finish testing all functions
