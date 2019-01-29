@@ -127,15 +127,12 @@ proc text*(
         differentStyle = style != print.current.style
 
     if differentFg:
-        # switch the fg
         print.target.setForegroundColor(fg)
 
     if differentBg:
-        # switch the bg
         print.target.setBackgroundColor(bg)
 
     if differentStyle:
-        # switch the style
         print.target.setStyle(style)
 
     if indentBy > 0:
@@ -150,8 +147,7 @@ proc text*(
     # write the text
     print.target.write(text)
 
-    # revert the style changes (if any)
-    if style != print.current.style:
+    if differentStyle:
         # HACK(steve):
         #   Osnap! Looks like you can't unset a style. We have
         #   to clear everything! That doesn't seem right. Look
@@ -166,10 +162,10 @@ proc text*(
         differentFg = true
         differentBg = true
 
-    if fg != print.current.fg:
+    if differentFg:
         print.target.setForegroundColor(print.current.fg)
 
-    if bg != print.current.bg:
+    if differentBg:
         print.target.setBackgroundColor(print.current.bg)
 
 proc enter*(print: Print, count=1): Print {.discardable.} =
