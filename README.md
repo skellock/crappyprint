@@ -265,6 +265,10 @@ newPrint()
 
 # Changelog
 
+**`next`** - TBD
+
+- fixes issues with style overrides
+
 **`0.1.0`** - Jan 21, 2019
 
 - Initial release
