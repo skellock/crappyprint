@@ -265,13 +265,13 @@ newPrint()
 
 # Changelog
 
-**`next`** - TBD
+#### `master` - not released yet
 
 - fixes issues with style overrides
 
-**`0.1.0`** - Jan 21, 2019
+#### `0.1.0` - Jan 21, 2019
 
-- Initial release
+- initial release
 
 # Requirements
 
