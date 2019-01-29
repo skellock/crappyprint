@@ -10,7 +10,7 @@ proc cool(print: Print, text: string): Print =
     print.text(text, fg=fgBlue, style={styleDim})
 
 proc icy(print: Print, text: string): Print =
-    print.text(text, style={styleUnderscore}, bg=bgBlue, fg=fgWhite)
+    print.text(text, style={styleBlink, styleUnderscore}, bg=bgBlue, fg=fgWhite)
 
 proc hip(print: Print, text: string): Print =
     print.text(text, fg=fgBlue, style={styleBright})
@@ -40,7 +40,7 @@ print
     .section("Verse 1")
         # line 1
         .text("We're ")
-        .text("no strangers ", style={styleBright})
+        .text("no strangers ", style={styleBright}, fg=fgWhite)
         .text("to ")
         .text("love", fg=fgWhite, bg=bgRed)
         .text(".")
