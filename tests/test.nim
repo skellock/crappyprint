@@ -46,11 +46,11 @@ expect "hi\n\n\n\n":
     newPrint(file).text("hi").enter().enter(3)
 
 # foreground text color
-expect "\e[31m\e[49mhello\e[0m\e[0m":
+expect "\e[31mhello\e[39m":
     newPrint(file).text("hello", fg=fgRed)
 
 # background text color
-expect "\e[39m\e[41mhello\e[0m\e[0m":
+expect "\e[41mhello\e[49m":
     newPrint(file).text("hello", bg=bgRed)
 
 # indentation

@@ -282,7 +282,8 @@ newPrint()
 # TODOs
 
 - [x] make CI work on `nim@0.19.2`
-- [ ] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
+- [x] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
+- [ ] investigate how to reset `style` only
 - [ ] support for "\n" characters when using `text()`
 - [ ] finish testing all functions
 - [ ] support windows (not sure what's involved)

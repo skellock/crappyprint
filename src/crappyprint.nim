@@ -5,7 +5,6 @@ system.addQuitProc(resetAttributes)
 type
     PrintStyle = object
         ## Styling information
-        name: string        ## the name of the style (currently unused)
         style: set[Style]   ## the terminal style
         fg: ForegroundColor ## the terminal foreground color
         bg: BackgroundColor ## the terminal background color
@@ -60,7 +59,6 @@ proc reset*(print: Print): Print {.discardable.} =
     result = print
     print.isLineIndented = false
     print.current = PrintStyle(
-        name: "root",
         style: {},
         fg: fgDefault,
         bg: bgDefault,
@@ -77,6 +75,7 @@ proc bright*(print: Print, on = true): Print {.discardable.} =
     else:
         print.current.style.excl(styleBright)
 
+    print.target.resetAttributes()
     print.applyCurrentStyle()
 
 
@@ -122,17 +121,23 @@ proc text*(
     ## Writes some text on the screen.
     result = print
 
-    var hasChanges = false
-    if fg != fgDefault or bg != bgDefault or style != {}:
-        # we need to temporarily change the style, fg or bg
-        var tempStyle = print.current
-        hasChanges = true
-        tempStyle.style = style
-        tempStyle.fg = fg
-        tempStyle.bg = bg
-        print.applyStyle(tempStyle)
+    var
+        differentFg = fg != print.current.fg
+        differentBg = bg != print.current.bg
+        differentStyle = style != print.current.style
 
-    # indentation
+    if differentFg:
+        # switch the fg
+        print.target.setForegroundColor(fg)
+
+    if differentBg:
+        # switch the bg
+        print.target.setBackgroundColor(bg)
+
+    if differentStyle:
+        # switch the style
+        print.target.setStyle(style)
+
     if indentBy > 0:
         # we need to temporarily change the indentation
         print.space(indentBy)
@@ -146,9 +151,26 @@ proc text*(
     print.target.write(text)
 
     # revert the style changes (if any)
-    if hasChanges:
-        print.applyCurrentStyle()
+    if style != print.current.style:
+        # HACK(steve):
+        #   Osnap! Looks like you can't unset a style. We have
+        #   to clear everything! That doesn't seem right. Look
+        #   this up.
+        #
+        #   For now, we have to flag the colors as being changed
+        #   because of the resetAttributes() call below.
+        print.target.resetAttributes()
+        print.target.setStyle(print.current.style)
 
+        # and here's the hack... we have to pretend the colours changed.
+        differentFg = true
+        differentBg = true
+
+    if fg != print.current.fg:
+        print.target.setForegroundColor(print.current.fg)
+
+    if bg != print.current.bg:
+        print.target.setBackgroundColor(print.current.bg)
 
 proc enter*(print: Print, count=1): Print {.discardable.} =
     ## Advances to the next line.
@@ -159,7 +181,12 @@ proc enter*(print: Print, count=1): Print {.discardable.} =
 
 
 func newPrint*(target: File = stdout, spacesPerIndent = 4): Print =
-    new result
-    result.current.name = "root"
+    let style = PrintStyle(
+        style: {},
+        fg: fgDefault,
+        bg: bgDefault,
+        indentBy: 0,
+    )
+    result = Print(current: style)
     result.target = target
     result.spacesPerIndent = spacesPerIndent
