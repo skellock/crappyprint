@@ -1,4 +1,4 @@
-import terminal, strutils # stdlib
+import terminal # stdlib
 
 system.addQuitProc(resetAttributes)
 
@@ -31,7 +31,7 @@ proc applyCurrentStyle(print: Print): Print {.discardable.} =
     result = print.applyStyle(print.current)
 
 
-proc indent*(print: Print, levels=1): Print {.discardable.} =
+proc indent*(print: Print, levels = 1): Print {.discardable.} =
     ## Changes the indentation for new lines. Levels indicates the number
     ## of indendations to apply and not the number of spaces.
     ##
@@ -103,7 +103,7 @@ proc bg*(print: Print, color: BackgroundColor): Print {.discardable.} =
     print.target.setBackgroundColor(color)
 
 
-proc space*(print: Print, count=1): Print {.discardable.} =
+proc space*(print: Print, count = 1): Print {.discardable.} =
     ## Writes a space.
     result = print
     for i in 1..count:
@@ -168,7 +168,7 @@ proc text*(
     if differentBg:
         print.target.setBackgroundColor(print.current.bg)
 
-proc enter*(print: Print, count=1): Print {.discardable.} =
+proc enter*(print: Print, count = 1): Print {.discardable.} =
     ## Advances to the next line.
     result = print
     print.isLineIndented = false
