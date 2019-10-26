@@ -19,22 +19,22 @@ template expect(expected: string, body: untyped): untyped {.dirty.} =
     ##
     ## Halp!
     block:
-      let
-          filename = "tests/output"
-          file = open(filename, fmReadWrite)
-      try:
-          discard body
-      finally:
-          file.close()
+        let
+            filename = "tests/output"
+            file = open(filename, fmReadWrite)
+        try:
+            discard body
+        finally:
+            file.close()
 
-      # The stackOffset is a hack that will capture the source of the error
-      # and not the next line of code: verify(...). I do this because this
-      # is a template.
-      #
-      # If you use verify() outside a template, you can leave
-      # this parameter off since the default is 1.
-      let content = readFile(filename)
-      verify(content, expected, stackOffset=2)
+        # The stackOffset is a hack that will capture the source of the error
+        # and not the next line of code: verify(...). I do this because this
+        # is a template.
+        #
+        # If you use verify() outside a template, you can leave
+        # this parameter off since the default is 1.
+        let content = readFile(filename)
+        verify(content, expected, stackOffset = 2)
 
 
 # normal text
@@ -47,29 +47,29 @@ expect "hi\n\n\n\n":
 
 # foreground text color
 expect "\e[31mhello\e[39m":
-    newPrint(file).text("hello", fg=fgRed)
+    newPrint(file).text("hello", fg = fgRed)
 
 # background text color
 expect "\e[41mhello\e[49m":
-    newPrint(file).text("hello", bg=bgRed)
+    newPrint(file).text("hello", bg = bgRed)
 
 # indentation
 expect "  a\nb\n    c\nd\ne":
-    newPrint(file, spacesPerIndent=2)
-        .indent()    # over 1
+    newPrint(file, spacesPerIndent = 2)
+        .indent() # over 1
         .text("a").enter()
-        .indent(-1)  # back 1
+        .indent(-1) # back 1
         .text("b").enter()
-        .indent(2)   # over 2
+        .indent(2) # over 2
         .text("c").enter()
-        .indent(0)   # reset
+        .indent(0) # reset
         .text("d").enter()
         .indent(-69) # minimum of 0
         .text("e")
 
 # indent during text
 expect "  hello":
-    newPrint(file).text("hello", indentBy=2)
+    newPrint(file).text("hello", indentBy = 2)
 
 # space
 expect "     ":
