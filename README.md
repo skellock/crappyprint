@@ -23,7 +23,7 @@ var print = newStringPrint()
 
 echo $print
 
-// seems like a crappy way to concat strings eh? ;P
+# seems like a crappy way to concat strings eh? ;P
 ```
 
 # Basic terminal example
