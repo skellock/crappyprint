@@ -127,7 +127,7 @@ See [this code](examples/rick.nim) for a larger example.
 
 # API
 
-### `newStringPrint(initialValue = "", spacesPerIndent = 2)`
+### `newStringPrint(initialValue = "", spacesPerIndent = 4)`
 
 Returns a `Print` object used to chain styling functions. This kind of `Print` is good
 for writing code generators.
@@ -135,13 +135,13 @@ for writing code generators.
 | argument       | type     | description                                                      | default |
 | -------------- | -------- | ---------------------------------------------------------------- | ------- |
 | intialValue    | `string` | optional: the starting value to use                              | `""`    |
-| spacePerIndent | `int`    | optional: how many spaces are printed for each indentation level | `2`     |
+| spacePerIndent | `int`    | optional: how many spaces are printed for each indentation level | `4`     |
 
 ```nim
 let print = newStringPrint()
 ```
 
-### `newFilePrint(target = stdout, spacesPerIndent = 2)`
+### `newFilePrint(target = stdout, spacesPerIndent = 4)`
 
 Returns a `Print` object used to chain styling functions. This kind of `Print` is good
 for writing to the terminal.
@@ -149,13 +149,13 @@ for writing to the terminal.
 | argument       | type   | description                                                      | default  |
 | -------------- | ------ | ---------------------------------------------------------------- | -------- |
 | target         | `File` | optional: where to write to                                      | `stdout` |
-| spacePerIndent | `int`  | optional: how many spaces are printed for each indentation level | `2`      |
+| spacePerIndent | `int`  | optional: how many spaces are printed for each indentation level | `4`      |
 
 ```nim
 let print = newFilePrint()
 ```
 
-### `newStreamPrint(target = StringStream, spacesPerIndent = 2)`
+### `newStreamPrint(target = StringStream, spacesPerIndent = 4)`
 
 Returns a `Print` object used to chain styling functions. This kind of `Print` is good
 for streaming if you're building a massive string.
@@ -163,7 +163,7 @@ for streaming if you're building a massive string.
 | argument       | type           | description                                                      | default  |
 | -------------- | -------------- | ---------------------------------------------------------------- | -------- |
 | target         | `StringStream` | optional: where to write to                                      | `stdout` |
-| spacePerIndent | `int`          | optional: how many spaces are printed for each indentation level | `2`      |
+| spacePerIndent | `int`          | optional: how many spaces are printed for each indentation level | `4`      |
 
 ```nim
 var ss = newStringStream()
