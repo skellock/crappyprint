@@ -2,13 +2,15 @@
 
 # What is `crappyprint`?
 
-A [`nim`](https://nim-lang.org) library to build your own printing DSLs. You can target a `File`,
-`StringStream` or a `string`.
+
+A [`nim`](https://nim-lang.org) library to build your own printing DSLs. You can target a `File`, `StringStream` or a `string`.
 
 Use cases that work for me:
 
 1. code generators
 2. CLIs with a lot of styled text
+
+![alt text](./images/rick.png "Example")
 
 # Basic string example
 
