@@ -7,5 +7,5 @@ jobs:
       - checkout
       - run: apt-get update; apt-get install -y curl
       - run: curl -sSf https://nim-lang.org/choosenim/init.sh | sh -s -- -y
-      - run: choosenim 0.19.2
+      - run: choosenim 1.0.2
       - run: nimble test
