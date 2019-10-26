@@ -26,11 +26,11 @@ proc section(print: Print, text: string): Print =
         .indent()
 
 proc sectionEnd(print: Print): Print =
-    print.indent(-1).enter(2)
+    print.unindent().enter(2)
 
 # --- start of program ---
 
-let print = newPrint()
+let print = newFilePrint()
 
 print
     .section("Intro")
