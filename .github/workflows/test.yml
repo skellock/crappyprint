@@ -6,12 +6,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    container:
+      image: nimlang/nim
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Install choosenim
-      run: curl -sSf https://nim-lang.org/choosenim/init.sh | sh -s -- -y
     - name: run tests
       run: nimble test
