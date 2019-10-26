@@ -2,14 +2,36 @@
 
 # What is `crappyprint`?
 
-A [`nim`](https://nim-lang.org) library to build your own terminal printing DSLs.
+A [`nim`](https://nim-lang.org) library to build your own printing DSLs. You can target a `File`,
+`StringStream` or a `string`.
 
-# Basic Example
+Use cases that work for me:
+
+1. code generators
+2. CLIs with a lot of styled text
+
+# Basic string example
+
+```nim
+import crappyprint
+
+var print = newStringPrint()
+  .text("Hello")
+  .enter()
+  .text("World")
+  .enter()
+
+echo $print
+
+// seems like a crappy way to concat strings eh? ;P
+```
+
+# Basic terminal example
 
 ```nim
 import terminal, crappyprint
 
-newPrint()                            # spin it up & start chaining...
+newFilePrint()                        # spin it up & start chaining...
   .text("We're ")                     # normal text
   .text("no ", style={styleBright})   # different styles
   .text("strangers to ")
@@ -27,7 +49,7 @@ You can make changes to colors, styles, or indentation.
 ```nim
 import terminal, crappyprint
 
-newPrint(spacesPerIndent=4)
+newFilePrint(spacesPerIndent=4)
   .bright()              # any text will now be bold
   .fg(fgYellow)          # and yellow
   .text("Never gonna:")
@@ -41,7 +63,7 @@ newPrint(spacesPerIndent=4)
   .text("let you down").enter()
   .text("run around and desert you").enter(2)
 
-  .indent(0) # <-- restores original indentation
+  .unindent() # <-- restores original indentation
 ```
 
 # Composition Example
@@ -72,7 +94,7 @@ proc bullet(print: Print, text: string): Print =
 With those 2 functions in play, here's what the previous example looks like now...
 
 ```nim
-newPrint(spacesPerIndent=4)
+newFilePrint(spacesPerIndent=4)
   .title("Never gonna")
   .bullet("give you up")
   .bullet("let you down")
@@ -95,15 +117,30 @@ See [this code](examples/rick.nim) for a larger example.
 
 # Principles
 
-- programs should make their own styling functions (like a style guide)
-- don't reinvent colors and style from `terminal`
-- terminal printing is already stateful; so embrace that
+-   programs should make their own styling functions (like a style guide)
+-   don't reinvent colors and style from `terminal`
+-   terminal printing is already stateful; so embrace that
 
 # API
 
-### `newPrint(target=stdout, spacesPerIndent=2)`
+### `newStringPrint(initialValue = "", spacesPerIndent = 2)`
 
-Returns a `Print` object used to chain styling functions.
+Returns a `Print` object used to chain styling functions. This kind of `Print` is good
+for writing code generators.
+
+| argument       | type     | description                                                      | default |
+| -------------- | -------- | ---------------------------------------------------------------- | ------- |
+| intialValue    | `string` | optional: the starting value to use                              | `""`    |
+| spacePerIndent | `int`    | optional: how many spaces are printed for each indentation level | `2`     |
+
+```nim
+let print = newFilePrint()
+```
+
+### `newFilePrint(target = stdout, spacesPerIndent = 2)`
+
+Returns a `Print` object used to chain styling functions. This kind of `Print` is good
+for writing to the terminal.
 
 | argument       | type   | description                                                      | default  |
 | -------------- | ------ | ---------------------------------------------------------------- | -------- |
@@ -111,39 +148,56 @@ Returns a `Print` object used to chain styling functions.
 | spacePerIndent | `int`  | optional: how many spaces are printed for each indentation level | `2`      |
 
 ```nim
-let print = newPrint()
+let print = newFilePrint()
 ```
 
-### `.text(value, fg=fgDefault, bg=bgDefault, style={}, indentBy=0)`
+### `newStreamPrint(target = StringStream, spacesPerIndent = 2)`
+
+Returns a `Print` object used to chain styling functions. This kind of `Print` is good
+for streaming if you're building a massive string.
+
+| argument       | type           | description                                                      | default  |
+| -------------- | -------------- | ---------------------------------------------------------------- | -------- |
+| target         | `StringStream` | optional: where to write to                                      | `stdout` |
+| spacePerIndent | `int`          | optional: how many spaces are printed for each indentation level | `2`      |
+
+```nim
+var ss = newStringStream()
+let print = newStreamPrint(ss)
+```
+
+### `.text(value = "", fg = fgDefault, bg = bgDefault, style = {}, indentBy = 0)`
 
 Prints text. You'll be using this one frequently.
 
+Note that only `Print` created with `newFilePrint()` supports terminal styling colours.
+
 | argument | type              | description                                                                  | default     |
 | -------- | ----------------- | ---------------------------------------------------------------------------- | ----------- |
-| value    | `string`          | the text to print                                                            | -           |
+| value    | `string`          | the text to print                                                            | `""`        |
 | fg       | `ForegroundColor` | optional: applies a foreground color to the text                             | `fgDefault` |
 | bg       | `BackgroundColor` | optional: applies a background color to the text                             | `bgDefault` |
 | style    | `set[Style]`      | optional: applies styling (`styleBright` for example) to the text            | `{}`        |
 | indentBy | `int`             | optional: overrides the current indentation with a specific number of spaces | `0`         |
 
 ```nim
-newPrint()
+newFilePrint()
   .text("Say ")
-  .text("hello ", style={styleBold})
-  .text("to my", fg=bgGreen)
-  .text(" little friend!", bg=bgBlue, fg=fgWhite)
+  .text("hello ", style = {styleBold})
+  .text("to my", fg = bgGreen)
+  .text(" little friend!", bg = bgBlue, fg = fgWhite)
 ```
 
 ### `.fg(color)`
 
-Changes the foreground color.
+Changes the foreground color for `File`-based `Print`ers.
 
 | argument  | type              | description                                                  |
 | --------- | ----------------- | ------------------------------------------------------------ |
 | **color** | `ForegroundColor` | applies a foreground color to any text written in the future |
 
 ```nim
-newPrint()
+newFilePrint()
   .text("Days since last accident: ")
   .fg(fgRed)     # <-- red text
   .text("0")
@@ -153,14 +207,14 @@ newPrint()
 
 ### `.bg(color)`
 
-Changes the background color.
+Changes the background color for `File`-based `Print`ers.
 
 | argument  | type              | description                                                  |
 | --------- | ----------------- | ------------------------------------------------------------ |
 | **color** | `BackgroundColor` | applies a background color to any text written in the future |
 
 ```nim
-newPrint()
+newFilePrint()
   .text("Don't cry for me, Argentina.").enter(2)
   .bg(bgCyan)  # <-- cyan
   .text("           ").enter()
@@ -180,14 +234,30 @@ Changes the indentation level so text will be inset from the left on each line.
 | --------- | ----- | ----------------------------------- | ------- |
 | **level** | `int` | how many levels we should move over | `1`     |
 
-By default (see: `newPrint()`), there are `2` spacers for every `1` level of indenting.
+```nim
+newStringPrint()
+  .text("Dear Diary,").enter(2)
+  .indent() # <-- move future text to the right (4 spaces by default)
+  .text("I love nim.").enter(2)
+  .indent(-1) # <-- sets the indentation back
+  .text("Love, ").enter(2)
+  .text("Steve")
+```
+
+### `.unindent(level)`
+
+This is the opposite of `.indent()`.
+
+| argument  | type  | description                         | default |
+| --------- | ----- | ----------------------------------- | ------- |
+| **level** | `int` | how many levels we should move back | `1`     |
 
 ```nim
-newPrint()
+newStringPrint()
   .text("Dear Diary,").enter(2)
   .indent() # <-- move future text to the right (2 spaces)
   .text("I love nim.").enter(2)
-  .indent(-1) # <-- sets the indentation back
+  .unindent() # <-- sets the indentation back
   .text("Love, ").enter(2)
   .text("Steve")
 ```
@@ -201,7 +271,7 @@ Adds horizontal whitespace.
 | **count** | `int` | the number of spaces to add | `1`     |
 
 ```nim
-newPrint()
+newStringPrint()
   .space(81) # <-- adds some spaces
   .text("the forbidden zone!")
 ```
@@ -215,7 +285,7 @@ Moves to the next line.
 | **count** | `int` | the number of lines to add | `1`     |
 
 ```nim
-newPrint()
+newStringPrint()
   .text("Patience...")
   .enter(4000) # <-- RIP your terminal
   .text("is a virtue.")
@@ -223,7 +293,7 @@ newPrint()
 
 ### `.bright(on)`
 
-Makes subsequent text be bright/bold.
+Makes subsequent text be bright/bold for `File`-based `Print`ers.
 
 | argument | type   | description                      | default |
 | -------- | ------ | -------------------------------- | ------- |
@@ -232,7 +302,7 @@ Makes subsequent text be bright/bold.
 You can turn this off again with `.bright(off)`.
 
 ```nim
-newPrint()
+newFilePrint()
   .bright()      # <-- on
   .text("twinkle twinkle")
   .bright(false) # <-- off
@@ -241,7 +311,7 @@ newPrint()
 
 ### `.dim(on)`
 
-Makes subsequent text be dim.
+Makes subsequent text be dim for `File`-based `Print`ers.
 
 | argument | type   | description                      | default |
 | -------- | ------ | -------------------------------- | ------- |
@@ -250,7 +320,7 @@ Makes subsequent text be dim.
 You can turn this off again with `.dim(off)`.
 
 ```nim
-newPrint()
+newFilePrint()
   .text("867-5309")
   .dim()      # <-- on
   .text("/ Jenny")
@@ -259,41 +329,42 @@ newPrint()
 
 # Why not use this?
 
-- the `terminal` module is already great
-- your program doesn't print much styled text
-- this library does very little
+-   your program doesn't print much
+-   the `terminal` module is already great for styled printing
+-   because I wrote this
 
 # Changelog
 
-#### `master` - not released yet
+#### `0.2.0` - not released yet
 
-- fixes issues with style overrides
+-   Fixes issues with style overrides.
+-   Adds support for targeting streams and strings.
+-   Adds `unindent(x)` which is simply `indent(-x)`
+-   Removes the quit proc for resetting the terminal because it prevented piping output as text.
 
 #### `0.1.0` - Jan 21, 2019
 
-- initial release
+-   Initial Release.
 
 # Requirements
 
-- Nim 0.19.2+
+-   Nim 1.x
 
 # Installing
 
-`nimble install https://github.com/skellock/crappyprint#head`
+`nimble install https://github.com/skellock/crappyprint#v0.1.0`
 
 ( NOTE: I haven't submitted this to `nimble` just yet. )
 
 # TODOs
 
-- [x] make CI work on `nim@0.19.2`
-- [x] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
-- [ ] investigate how to reset `style` only
-- [ ] support for "\n" characters when using `text()`
-- [ ] finish testing all functions
-- [ ] support windows (not sure what's involved)
-- [ ] show more examples of control flow
-- [ ] change name of library?
-- [ ] submit to nimble
+-   [x] make CI work
+-   [x] in `text()`, make `fg`, `bg`, and `style` changes independent from each other
+-   [x] finish testing all functions
+-   [ ] support windows (not sure what's involved)
+-   [ ] show more examples of control flow
+-   [ ] change name of library?
+-   [ ] submit to nimble
 
 # License
 
