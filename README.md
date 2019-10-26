@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/skellock/crappyprint.svg?style=svg)](https://circleci.com/gh/skellock/crappyprint)
-
 # What is `crappyprint`?
 
 
