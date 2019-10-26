@@ -339,7 +339,7 @@ newFilePrint()
 
 # Changelog
 
-#### `0.2.0` - not released yet
+#### `0.2.0` - Oct 26, 2019
 
 -   Fixes issues with style overrides.
 -   Adds support for targeting streams and strings.
