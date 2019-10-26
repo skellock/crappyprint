@@ -10,8 +10,7 @@ Use it for:
 1. code generators
 2. CLIs with a lot of styled text
 
-
-![alt text](./images/rick.png "Example")
+<img src="./images/rick.png" width=578 alt="Example" />
 
 You can find the source code for ↑ that image ↑ in `./examples/rick.nim`.
 
