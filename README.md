@@ -5,12 +5,15 @@
 
 A [`nim`](https://nim-lang.org) library to build your own printing DSLs. You can target a `File`, `StringStream` or a `string`.
 
-Use cases that work for me:
+Use it for:
 
 1. code generators
 2. CLIs with a lot of styled text
 
+
 ![alt text](./images/rick.png "Example")
+
+You can find the source code for ↑ that image ↑ in `./examples/rick.nim`.
 
 # Basic string example
 
@@ -51,7 +54,7 @@ You can make changes to colors, styles, or indentation.
 ```nim
 import terminal, crappyprint
 
-newFilePrint(spacesPerIndent=4)
+newFilePrint(spacesPerIndent = 4)
   .bright()              # any text will now be bold
   .fg(fgYellow)          # and yellow
   .text("Never gonna:")
