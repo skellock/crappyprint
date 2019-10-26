@@ -134,7 +134,7 @@ for writing code generators.
 | spacePerIndent | `int`    | optional: how many spaces are printed for each indentation level | `2`     |
 
 ```nim
-let print = newFilePrint()
+let print = newStringPrint()
 ```
 
 ### `newFilePrint(target = stdout, spacesPerIndent = 2)`
@@ -255,7 +255,7 @@ This is the opposite of `.indent()`.
 ```nim
 newStringPrint()
   .text("Dear Diary,").enter(2)
-  .indent() # <-- move future text to the right (2 spaces)
+  .indent() # <-- move future text to the right
   .text("I love nim.").enter(2)
   .unindent() # <-- sets the indentation back
   .text("Love, ").enter(2)
