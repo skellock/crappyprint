@@ -42,6 +42,20 @@ newFilePrint()                        # spin it up & start chaining...
   .enter()                            # next line
 ```
 
+Or the same thing using the `std/with` available since Nim 1.2.
+
+```nim
+import terminal, crappyprint, std/with
+
+with newFilePrint():
+  text "We're "
+  text "no ", style={styleBright}
+  text "strangers to "
+  text "love", fg=fgWhite, bg=bgRed
+  text "."
+  enter
+```
+
 Nothing too exciting here, eh?
 
 # Stateful Example
