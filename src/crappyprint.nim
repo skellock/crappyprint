@@ -29,12 +29,13 @@ type
         isLineIndented: bool            ## Have we already applied indentation for this line?
 
 # the default style used for starting and resetting
-let defaultStyle = PrintStyle(
+const defaultStyle = PrintStyle(
     style: {},
     fg: fgDefault,
     bg: bgDefault,
     indentBy: 0,
 )
+
 
 proc applyStyle(print: Print, style: PrintStyle): Print {.discardable.} =
     ## Bestows the proper colors and style onto the underlying file (e.g. stdout)
@@ -49,10 +50,12 @@ proc applyStyle(print: Print, style: PrintStyle): Print {.discardable.} =
     else:
         discard
 
+
 proc applyCurrentStyle(print: Print): Print {.discardable.} =
     ## Reapplies whatever is on the top of the style stack.
     ##
     result = print.applyStyle(print.current)
+
 
 proc indent*(print: Print, levels = 1): Print {.discardable.} =
     ## Changes the indentation for new lines. Levels indicates the number
@@ -83,6 +86,7 @@ proc unindent*(print: Print, levels = 1): Print {.discardable.} =
     ##
     result = print.indent(-levels)
 
+
 proc reset*(print: Print): Print {.discardable.} =
     ## Resets us back to the original state also clears any indentation.
     ##
@@ -94,6 +98,7 @@ proc reset*(print: Print): Print {.discardable.} =
         print.targetFile.resetAttributes()
     else:
         discard
+
 
 proc bright*(print: Print, on = true): Print {.discardable.} =
     ## Makes the current style bright if the target is a File.
@@ -233,6 +238,7 @@ proc text*(
     of ptString:
         print.targetString.add(text)
 
+
 proc enter*(print: Print, count = 1): Print {.discardable.} =
     ## Advances to the next line.
     ##
@@ -247,6 +253,7 @@ proc enter*(print: Print, count = 1): Print {.discardable.} =
         of ptString:
             print.targetString.add("\l")
 
+
 proc newFilePrint*(target: var File = stdout, spacesPerIndent = 4): Print =
     ## Creates a new Print targeting a File. This is great for writing things
     ## to the terminal.
@@ -255,12 +262,14 @@ proc newFilePrint*(target: var File = stdout, spacesPerIndent = 4): Print =
     result.targetFile = target
     result.spacesPerIndent = spacesPerIndent
 
+
 proc newStreamPrint*(target: var StringStream, spacesPerIndent = 4): Print =
     ## Creates a new Print targeting a Stream. Any terminal styles are ignored.
     ##
     result = Print(current: defaultStyle, kind: ptStream)
     result.targetStream = target
     result.spacesPerIndent = spacesPerIndent
+
 
 proc newStringPrint*(initialValue: string = "", spacesPerIndent = 4): Print =
     ## Creates a new Print which can be acquired by calling `$` or `.toString`
@@ -269,6 +278,7 @@ proc newStringPrint*(initialValue: string = "", spacesPerIndent = 4): Print =
     result = Print(current: defaultStyle, kind: ptString)
     result.targetString = initialValue
     result.spacesPerIndent = spacesPerIndent
+
 
 proc `$`*(print: Print): string =
     ## String-based `Print`s will return the built string that has been assembled
@@ -282,6 +292,7 @@ proc `$`*(print: Print): string =
         result = ""
     of ptString:
         result = print.targetString
+
 
 proc toString*(print: Print): string =
     ## String-based `Print`s will return the built string that has been assembled
